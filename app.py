@@ -75,7 +75,7 @@ def preprocess_data(df_input):
     for col in categorical_cols:
         if col in df.columns:
             # For consistent one-hot encoding, we need to ensure the columns match
-            # during prediction. This is a common challenge.
+            # during prediction. This. is a common challenge.
             # A robust way is to re-create the dummy variables and then align columns.
             df = pd.get_dummies(df, columns=[col], prefix=col, drop_first=True)
 
