@@ -3,12 +3,19 @@
 import streamlit as st
 import pandas as pd
 import pickle
+import os
 
-# Load model and scaler
-with open("customer_model.pkl", "rb") as f:
+model_path = "customer_model.pkl"
+scaler_path = "customer_scaler.pkl"    
+
+if not os.path.exists(model_path) or not os.path.exists(scaler_path):
+    st.error("Model files not found. Please run model_training.py first.")
+    st.stop()
+
+with open(model_path, "rb") as f:
     model = pickle.load(f)
 
-with open("customer_scaler.pkl", "rb") as f:
+with open(scaler_path, "rb") as f:
     scaler = pickle.load(f)
 
 st.title("🧠 Customer Personality Segmentation")
