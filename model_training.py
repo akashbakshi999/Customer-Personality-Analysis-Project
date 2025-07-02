@@ -5,23 +5,23 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 import pickle
 
-# Load the Excel file
-df = pd.read_excel("marketing_campaign1.xlsx")  # ← updated file name
+# Load Excel file (make sure the file is in the same folder)
+df = pd.read_excel("marketing_campaign1.xlsx")
 
-# Drop irrelevant columns
+# Drop unnecessary columns
 df.drop(columns=['ID', 'Z_CostContact', 'Z_Revenue'], errors='ignore', inplace=True)
 
-# Drop rows with missing values
+# Drop missing values
 df.dropna(inplace=True)
 
-# Select numeric features only
+# Select numeric columns
 X = df.select_dtypes(include=['int64', 'float64'])
 
-# Standardize features
+# Scale the data
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# Fit KMeans model
+# Train KMeans
 model = KMeans(n_clusters=4, random_state=42)
 model.fit(X_scaled)
 
