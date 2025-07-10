@@ -1,35 +1,34 @@
 # model_training.py
-!pip install matplotlib
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 import pickle
 
-# Load Excel file (make sure the file is in the same folder)
-df = pd.read_excel("marketing_campaign1.xlsx")
+# Load data
+df = pd.read_excel("marketing_campaign1.xlsx", sheet_name="marketing_campaign")
 
-# Drop unnecessary columns
-df.drop(columns=['ID', 'Z_CostContact', 'Z_Revenue'], errors='ignore', inplace=True)
+# Preprocess
+df = df.dropna()
+df['Age'] = 2025 - df['Year_Birth']
+df['TotalChildren'] = df['Kidhome'] + df['Teenhome']
+df['TotalSpend'] = df[['MntWines', 'MntFruits', 'MntMeatProducts',
+                       'MntFishProducts', 'MntSweetProducts', 'MntGoldProds']].sum(axis=1)
 
-# Drop missing values
-df.dropna(inplace=True)
+features = df[['Income', 'Age', 'TotalChildren', 'Recency', 'TotalSpend']]
 
-# Select numeric columns
-X = df.select_dtypes(include=['int64', 'float64'])
-
-# Scale the data
+# Scale
 scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
+scaled_features = scaler.fit_transform(features)
 
-# Train KMeans
+# Train model
 model = KMeans(n_clusters=4, random_state=42)
-model.fit(X_scaled)
+model.fit(scaled_features)
 
 # Save model and scaler
-with open("customer_model.pkl", "wb") as f:
-    pickle.dump(model, f)
-
-with open("customer_scaler.pkl", "wb") as f:
+with open("scaler.pkl", "wb") as f:
     pickle.dump(scaler, f)
 
-print("✅ Model and scaler saved successfully.")
+with open("kmeans_model.pkl", "wb") as f:
+    pickle.dump(model, f)
+
+print("Model and scaler saved.")
